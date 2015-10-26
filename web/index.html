@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+  <style>
+    html { box-sizing: border-box; font-size:62.5%; }
+    *, *:before, *:after { box-sizing: inherit; }
+
+    body {
+      font-size: 1.8rem;
+    }
+
+    #content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .commit {
+      font-family: monospace;
+      white-space: pre-wrap;
+      margin-bottom: 20px;
+      display: -ms-flex;
+      display: -webkit-flex;
+      display: flex;
+    }
+    .link, .date, .author {
+      margin-right: 2rem;
+      flex-shrink: 0;
+    }
+    .author img {
+      height: 2rem;
+      width: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="content">
+    <h1>Last Week's Commits To <code>master</code></h1>
+    <div id="commits"></div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script src="/js/moment.min.js"></script>
+  <script src="/js/script.js"></script>
+</body>
+</html>

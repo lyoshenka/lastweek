@@ -29,8 +29,8 @@ import (
 
 const (
 	cookieName         = "lwsession"
-	githubClientId     = "61f99518daf157383594"
-	githubClientSecret = "b83af5782f534917967911263c2473871b962fb9"
+	githubClientId     = "ce5daf8dcf2d04443909"
+	githubClientSecret = "53a3ed0e8dc8351c2ce0cbed9a178bb9ad3356f2"
 )
 
 func main() {

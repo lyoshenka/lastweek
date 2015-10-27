@@ -1,0 +1,62 @@
+{
+	"ImportPath": "github.com/topscore/lastweek",
+	"GoVersion": "go1.5",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "code.google.com/p/go-charset/charset",
+			"Comment": "null-32",
+			"Rev": "ebbeafdc430eb6c7e44e9a730a38eaff4c56ba3a"
+		},
+		{
+			"ImportPath": "code.google.com/p/go-charset/data",
+			"Comment": "null-32",
+			"Rev": "ebbeafdc430eb6c7e44e9a730a38eaff4c56ba3a"
+		},
+		{
+			"ImportPath": "github.com/arschles/assert",
+			"Rev": "6882f85ccdc7c1822b146d1a6b0c2c48f91b5140"
+		},
+		{
+			"ImportPath": "github.com/elazarl/goproxy",
+			"Comment": "v1.0-70-g3ef9f8e",
+			"Rev": "3ef9f8eea75eb4a94cd0e805364894297260486c"
+		},
+		{
+			"ImportPath": "github.com/goji/param",
+			"Rev": "da86c81e3e3c23b1948bc7a003d381250a032aa7"
+		},
+		{
+			"ImportPath": "github.com/hypebeast/gojistatic",
+			"Rev": "99b778e145961024738f4cd7c67e9d8766afc7f1"
+		},
+		{
+			"ImportPath": "github.com/inconshreveable/go-vhost",
+			"Rev": "8cbc5089df5ba3e44644d39e8d1ec375d6d842f9"
+		},
+		{
+			"ImportPath": "github.com/lyoshenka/go-bindata-html-template",
+			"Rev": "3fac60385a3bff517310696546269891fbcd879e"
+		},
+		{
+			"ImportPath": "github.com/parnurzeal/gorequest",
+			"Comment": "v0.2.11",
+			"Rev": "8fe8e16b3c50b6cc37399ee385b15f62a20bf584"
+		},
+		{
+			"ImportPath": "github.com/pmylund/go-cache",
+			"Rev": "a122e14c4b8ee69022f62f24ba85cb36ce844366"
+		},
+		{
+			"ImportPath": "github.com/zenazn/goji",
+			"Comment": "v0.9.0-29-g46b46e0",
+			"Rev": "46b46e00f46dda650e04f0bceeb7c40732cd5988"
+		},
+		{
+			"ImportPath": "golang.org/x/net/publicsuffix",
+			"Rev": "2cba614e8ff920c60240d2677bc019af32ee04e5"
+		}
+	]
+}

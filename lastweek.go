@@ -27,11 +27,10 @@ import (
 	"github.com/zenazn/goji/web"
 )
 
-const (
-	cookieName         = "lwsession"
-	githubClientId     = "ce5daf8dcf2d04443909"
-	githubClientSecret = "53a3ed0e8dc8351c2ce0cbed9a178bb9ad3356f2"
-)
+const cookieName = "lwsession"
+
+var githubClientId = os.Getenv("GITHUB_CLIENT_ID")
+var githubClientSecret = os.Getenv("GITHUB_CLIENT_SECRET")
 
 func main() {
 

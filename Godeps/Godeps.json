@@ -16,10 +16,6 @@
 			"Rev": "ebbeafdc430eb6c7e44e9a730a38eaff4c56ba3a"
 		},
 		{
-			"ImportPath": "github.com/arschles/assert",
-			"Rev": "6882f85ccdc7c1822b146d1a6b0c2c48f91b5140"
-		},
-		{
 			"ImportPath": "github.com/elazarl/goproxy",
 			"Comment": "v1.0-70-g3ef9f8e",
 			"Rev": "3ef9f8eea75eb4a94cd0e805364894297260486c"
@@ -29,16 +25,8 @@
 			"Rev": "da86c81e3e3c23b1948bc7a003d381250a032aa7"
 		},
 		{
-			"ImportPath": "github.com/hypebeast/gojistatic",
-			"Rev": "99b778e145961024738f4cd7c67e9d8766afc7f1"
-		},
-		{
 			"ImportPath": "github.com/inconshreveable/go-vhost",
 			"Rev": "8cbc5089df5ba3e44644d39e8d1ec375d6d842f9"
-		},
-		{
-			"ImportPath": "github.com/lyoshenka/go-bindata-html-template",
-			"Rev": "3fac60385a3bff517310696546269891fbcd879e"
 		},
 		{
 			"ImportPath": "github.com/parnurzeal/gorequest",

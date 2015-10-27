@@ -12,7 +12,7 @@ import (
 	"github.com/zenazn/goji/web"
 )
 
-func homeRoute(e *Env, c web.C, w http.ResponseWriter, r *http.Request) error {
+func requireAuth(e *Env, w http.ResponseWriter, r *http.Request) bool {
 	if e.Session.GithubToken == "" {
 		state := randString(16)
 		e.Session.GithubAuthState = state
@@ -21,24 +21,14 @@ func homeRoute(e *Env, c web.C, w http.ResponseWriter, r *http.Request) error {
 		queryParams.Add("scope", "repo")
 		queryParams.Add("state", state)
 		http.Redirect(w, r, fmt.Sprintf("https://github.com/login/oauth/authorize?%s", queryParams.Encode()), http.StatusFound)
-		return nil
+		return true
 	}
-
-	templateArgs := map[string]interface{}{
-		"token": e.Session.GithubToken,
-	}
-	fmt.Fprintln(w, getTemplate("home", templateArgs))
-	return nil
-}
-
-func robotsRoute(e *Env, c web.C, w http.ResponseWriter, r *http.Request) error {
-	fmt.Fprintln(w, "User-agent: *\nDisallow: /")
-	return nil
+	return false
 }
 
 func commitsRoute(e *Env, c web.C, w http.ResponseWriter, r *http.Request) error {
-	if e.Session.GithubToken == "" {
-		return StatusError{401, fmt.Errorf("Please authenticate with Github")}
+	if requireAuth(e, w, r) {
+		return nil
 	}
 
 	page := r.URL.Query().Get("page")

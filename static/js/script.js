@@ -31,9 +31,9 @@ $(function(){
 
             if (dateKey >= limit) {
               if (!(dateKey in commitsByDay)) {
-                commitsByDay[dateKey] = {};
+                commitsByDay[dateKey] = [];
               }
-              commitsByDay[dateKey][date.format('x')] = commit;
+              commitsByDay[dateKey].push(commit);
             } else {
               limitReached = true;
             }
@@ -53,9 +53,8 @@ $(function(){
       .text(moment(first(commitsByDay[dateKey])['commit']['committer']['date']).format('dddd'))
       .appendTo(commitsDiv);
 
-      Object.keys(commitsByDay[dateKey]).sort().reverse().forEach(function(commitKey) {
-        var commit = commitsByDay[dateKey][commitKey],
-            newlinePos = commit['commit']['message'].indexOf("\n"),
+      commitsByDay[dateKey].forEach(function(commit) {
+        var newlinePos = commit['commit']['message'].indexOf("\n"),
             shortMsg = newlinePos > 0 ? commit['commit']['message'].substr(0, newlinePos) : commit['commit']['message'],
             restOfMsg = newlinePos > 0 ? commit['commit']['message'].substr(newlinePos+1) : "";
 

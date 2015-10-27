@@ -3,24 +3,39 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href='https://fonts.googleapis.com/css?family=Work+Sans:400,700' rel='stylesheet' type='text/css'>
+  <link href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAABIAAAASABGyWs+AAAAF0lEQVRIx2NgGAWjYBSMglEwCkbBSAcACBAAAeaR9cIAAAAASUVORK5CYII=" rel="icon" type="image/x-icon" />
+  <link href='https://fonts.googleapis.com/css?family=Inconsolata|Work+Sans:400,600' rel='stylesheet' type='text/css'>
   <style>
-    html { box-sizing: border-box; font-size:62.5%; }
+    html { box-sizing: border-box; font-size: 10px; }
     *, *:before, *:after { box-sizing: inherit; }
 
     body {
       font-size: 1.8rem;
-      /*font-family: 'Work Sans', sans-serif;*/
+      font-family: 'Work Sans', sans-serif;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: 600;
+    }
+
+    h1 {
+      font-size: 3.6rem;
+    }
+    h2 {
+      font-size: 2.8rem;
     }
 
     #content {
       max-width: 800px;
       margin: 0 auto;
     }
+
+    pre, code, .commit {
+      font-family: 'Inconsolata', monospace;
+    }
+
     .commit {
-      font-family: monospace;
       white-space: pre-wrap;
-      margin-bottom: 20px;
+      margin-bottom: 2rem;
       display: -ms-flex;
       display: -webkit-flex;
       display: flex;
@@ -30,16 +45,14 @@
       flex-shrink: 0;
     }
     .author img {
-      height: 2rem;
-      width: 2rem;
+      height: 2.4rem;
+      width: 2.4rem;
     }
-/*    .success {
-      color: #3D9970;
+    .long-msg {
+      margin-top: 1rem;
+      color: #666;
+      font-size: 1.4rem;
     }
-    .error {
-      color: #FF4136;
-    }
-*/
   </style>
 </head>
 <body>
@@ -48,8 +61,22 @@
     <div id="commits"></div>
   </div>
 
+  <script id="commitTmpl" type="x-tmpl-mustache">
+  {{! careful about whitespace, all this is in <pre> ~}}
+    <div class="commit"
+      ><div class="link"><a href="{{commit_url}}">{{commit_sha}}</a></div
+      ><div class="date">{{date}}</div
+      ><div class="author"><img src="{{committer_img}}" title="{{committer_name}}" /></div
+      ><div class="message"
+        ><div class="short-msg">{{short_msg}}</div
+        ><div class="long-msg">{{long_msg}}</div
+      ></div
+    ></div>
+  </script>
+
   <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
   <script src="/js/moment.min.js"></script>
+  <script src="/js/handlebars-v4.0.2.js"></script>
   <script src="/js/script.js"></script>
 </body>
 </html>

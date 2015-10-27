@@ -9,15 +9,14 @@ function first(obj) {
 }
 
 $(function(){
-  var commitsDiv = $('#commits');
-
-  function linkToCommit(commit) {
-    return $('<a>').prop('href', commit['html_url']).text(commit['sha'].substring(0,8)).outerHtml();
-  }
-
-  var commitsByDay = {},
+  var commitsDiv = $('#commits'),
+      commitTmpl = Handlebars.compile($('#commitTmpl').html()),
+      commitsByDay = {},
       limit = moment().subtract(7, 'days').format('YYYY-MM-DD');
-      bucketCommits = function(page, cb) {
+
+  // Mustache.parse(commitTmpl);
+
+  var bucketCommits = function(page, cb) {
         var limitReached = false;
 
         if (page > 4) {
@@ -57,17 +56,21 @@ $(function(){
       Object.keys(commitsByDay[dateKey]).sort().reverse().forEach(function(commitKey) {
         var commit = commitsByDay[dateKey][commitKey],
             newlinePos = commit['commit']['message'].indexOf("\n"),
-            shortMsg = commit['commit']['message'].substr(0, newlinePos > 0 ? newlinePos : 9999);
+            shortMsg = newlinePos > 0 ? commit['commit']['message'].substr(0, newlinePos) : commit['commit']['message'],
+            restOfMsg = newlinePos > 0 ? commit['commit']['message'].substr(newlinePos+1) : "";
 
         // console.log(commit);
 
-        $('<div>')
-        .addClass('commit')
-        .append($('<div>').addClass('link').html(linkToCommit(commit)))
-        .append($('<div>').addClass('date').text(moment(commit['commit']['committer']['date']).format('HH:mm')))
-        .append($('<div>').addClass('author').html($('<img>').prop('src', commit['author']['avatar_url']).prop('title', commit['commit']['author']['name'])))
-        .append($('<div>').addClass('message').text(shortMsg))
-        .appendTo(commitsDiv);
+        commitsDiv.append(commitTmpl({
+          commit_url: commit['html_url'],
+          commit_sha: commit['sha'].substring(0,8),
+          date: moment(commit['commit']['committer']['date']).format('HH:mm'),
+          committer_img: commit['author']['avatar_url'],
+          committer_name: commit['commit']['author']['name'],
+          short_msg: shortMsg.trim(),
+          long_msg: restOfMsg.trim()
+        }));
+
       });
     });
   });

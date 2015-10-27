@@ -1,12 +1,11 @@
 package main
 
+// got this from http://elithrar.github.io/article/http-handler-error-handling-revisited/
+
 import (
 	"github.com/zenazn/goji/web"
 	"log"
 	"net/http"
-	"time"
-
-	gocache "github.com/pmylund/go-cache"
 )
 
 // Error represents a handler error. It provides methods for a HTTP status
@@ -48,7 +47,6 @@ type Handler struct {
 
 // ServeHTTP allows our Handler type to satisfy http.Handler.
 func (h Handler) ServeHTTPC(c web.C, w http.ResponseWriter, r *http.Request) {
-	h.Env.Session = getSession(w, r)
 	err := h.H(h.Env, c, w, r)
 	if err != nil {
 		switch e := err.(type) {
@@ -63,37 +61,4 @@ func (h Handler) ServeHTTPC(c web.C, w http.ResponseWriter, r *http.Request) {
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		}
 	}
-}
-
-//
-// SESSION + CACHE
-//
-
-var cache = gocache.New(1*time.Hour, 5*time.Minute)
-
-type sessionType struct {
-	GithubToken     string
-	GithubAuthState string
-}
-
-func getSession(w http.ResponseWriter, r *http.Request) *sessionType {
-	cookieName := "lwsession"
-	cookie, err := r.Cookie(cookieName)
-	if err != nil && err != http.ErrNoCookie {
-		panic(err)
-	}
-
-	if cookie == nil || cookie.Value == "" {
-		cookie = &http.Cookie{Name: cookieName, Value: randString(32), Expires: time.Now().Add(time.Hour), HttpOnly: true}
-		http.SetCookie(w, cookie)
-	}
-
-	session := &sessionType{}
-	if cachedVal, found := cache.Get(cookie.Value); found {
-		session = cachedVal.(*sessionType)
-	} else {
-		cache.Set(cookie.Value, session, 0)
-	}
-
-	return session
 }

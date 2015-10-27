@@ -28,7 +28,10 @@ func main() {
 		GithubClientSecret: os.Getenv("GITHUB_CLIENT_SECRET"),
 	}
 
+	unauthRoutes := RouteMap{"/git_auth_hook": true, "/robots.txt": true}
+
 	goji.Use(gojistatic.Static("static", gojistatic.StaticOptions{SkipLogging: true}))
+	goji.Use(SessionMiddleware(env, unauthRoutes))
 
 	goji.Get("/", Handler{env, homeRoute})
 	goji.Get("/git_auth_hook", Handler{env, gitAuthRoute})

@@ -21,6 +21,7 @@ func main() {
 
 	goji.Get("/git_auth_hook", Handler{env, gitAuthRoute})
 	goji.Get("/commits", Handler{env, commitsRoute})
+	goji.Get("/diffstat", Handler{env, diffstatRoute})
 
 	goji.Use(StaticMiddleware(env, "static"))
 

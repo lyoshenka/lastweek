@@ -5,22 +5,45 @@ jQuery.fn.outerHtml = function(s) {
 };
 
 function first(obj) {
-    for (var a in obj) return obj[a];
+  for (var a in obj) return obj[a];
 }
 
 $(function(){
   var commitsDiv = $('#commits'),
       commitTmpl = Handlebars.compile($('#commitTmpl').html()),
+      diffstatTmpl = Handlebars.compile($('#diffstatTmpl').html()),
       commitsByDay = {},
       limit = moment().subtract(7, 'days').format('YYYY-MM-DD');
 
-  // Mustache.parse(commitTmpl);
+  var diffstat = function (sha) {
+    var storedDiff = store.get('diffstat_'+sha),
+        updateDiffstat = function(sha, diffstat) {
+          $('#' + sha + ' .diffstat').html(diffstatTmpl({
+            additions: diffstat.stats.additions,
+            deletions: diffstat.stats.deletions,
+            files_changed: diffstat.files_changed,
+          }));
+
+          if (diffstat.stats.total > 50) {
+            $('#' + sha).addClass('major');
+          }
+        };
+
+    if (storedDiff && storedDiff.stats) {
+      updateDiffstat(sha, storedDiff);
+    } else {
+      $.getJSON('/diffstat' , {sha: sha}, function(data) {
+        store.set('diffstat_'+sha, data);
+        updateDiffstat(sha, data);
+      });
+    }
+  };
 
   var bucketCommits = function(page, cb) {
         var limitReached = false;
 
-        if (page > 4) {
-          arst; // safety precaution
+        if (page > 5) {
+          return; // safety precaution
         }
 
         $.getJSON('/commits' , {page: page}, function(data) {
@@ -47,6 +70,7 @@ $(function(){
         });
       };
 
+
   bucketCommits(1, function() {
     Object.keys(commitsByDay).sort().reverse().forEach(function(dateKey) {
       $('<h2>')
@@ -56,13 +80,14 @@ $(function(){
       commitsByDay[dateKey].forEach(function(commit) {
         var newlinePos = commit['commit']['message'].indexOf("\n"),
             shortMsg = newlinePos > 0 ? commit['commit']['message'].substr(0, newlinePos) : commit['commit']['message'],
-            restOfMsg = newlinePos > 0 ? commit['commit']['message'].substr(newlinePos+1) : "";
+            restOfMsg = newlinePos > 0 ? commit['commit']['message'].substr(newlinePos+1) : "",
+            commitSha = commit['sha'].substring(0,8);
 
         // console.log(commit);
 
         commitsDiv.append(commitTmpl({
           commit_url: commit['html_url'],
-          commit_sha: commit['sha'].substring(0,8),
+          commit_sha: commitSha,
           date: moment(commit['commit']['committer']['date']).format('HH:mm'),
           committer_img: commit['author']['avatar_url'],
           committer_name: commit['commit']['author']['name'],
@@ -70,6 +95,7 @@ $(function(){
           long_msg: restOfMsg.trim()
         }));
 
+        diffstat(commitSha);
       });
     });
   });

@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -11,6 +12,30 @@ import (
 	"github.com/parnurzeal/gorequest"
 	"github.com/zenazn/goji/web"
 )
+
+type statsType struct {
+	Additions int `json:"additions"`
+	Deletions int `json:"deletions"`
+	Total     int `json:"total"`
+}
+
+type commitType struct {
+	// Url   string
+	// Sha   string
+	CommentsUrl string `json:"comments_url"`
+
+	Commit struct {
+		CommentCount int `json:"comment_count"`
+	}
+
+	Stats statsType `json:"stats"`
+
+	Files []struct {
+		Sha      string `json:"sha"`
+		Filename string `json:"filename"`
+		Status   string `json:"status"`
+	}
+}
 
 func requireAuth(e *Env, w http.ResponseWriter, r *http.Request) bool {
 	if e.Session.GithubToken == "" {
@@ -45,6 +70,36 @@ func commitsRoute(e *Env, c web.C, w http.ResponseWriter, r *http.Request) error
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(body))
+	return nil
+}
+
+func diffstatRoute(e *Env, c web.C, w http.ResponseWriter, r *http.Request) error {
+	if requireAuth(e, w, r) {
+		return nil
+	}
+
+	sha := r.URL.Query().Get("sha")
+
+	_, body, _ := gorequest.New().Get(fmt.Sprintf("https://api.github.com/repos/topscore/topscore/commits/%s", sha)).
+		Param("access_token", e.Session.GithubToken).
+		End()
+
+	var commit commitType
+	err := json.Unmarshal([]byte(body), &commit)
+	check(err)
+	fmt.Printf("%+v", commit)
+
+	respBody, err := json.Marshal(struct {
+		Stats        statsType `json:"stats"`
+		FilesChanged int       `json:"files_changed"`
+	}{
+		Stats:        commit.Stats,
+		FilesChanged: len(commit.Files),
+	})
+	check(err)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(respBody)
 	return nil
 }
 

@@ -12,6 +12,8 @@
     body {
       font-size: 1.8rem;
       font-family: 'Work Sans', sans-serif;
+      background-color: #fff;
+      margin: 1rem;
     }
     h1, h2, h3, h4, h5, h6 {
       font-weight: 600;
@@ -35,23 +37,43 @@
 
     .commit {
       white-space: pre-wrap;
-      margin-bottom: 2.5rem;
-      display: -ms-flex;
+      display: -ms-flexbox;
       display: -webkit-flex;
+      display: -webkit-box;
       display: flex;
-      padding: 0.5rem;
+      padding: 0.5rem 0.5rem 2.5rem;
+      border-bottom: solid 1px #e8e8e8;
+    }
+    .commit:first-child {
+      border-top: solid 1px #e8e8e8;
     }
     .commit.major {
       background-color: #FFFFF2;
     }
 
+    .meta {
+      display: -webkit-flex;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+    }
+
     .link, .date, .author {
       margin-right: 2rem;
-      flex-shrink: 0;
+      -webkit-flex-shrink: 0;
+          -ms-flex-negative: 0;
+              flex-shrink: 0;
     }
     .author img {
       height: 2.4rem;
       width: 2.4rem;
+    }
+
+    .message {
+      -webkit-box-flex: 10;
+      -webkit-flex-grow: 10;
+          -ms-flex-positive: 10;
+              flex-grow: 10;
     }
     .long-msg {
       margin-top: 1rem;
@@ -60,7 +82,6 @@
     }
 
     .diffstat {
-      margin-left: auto;
       padding-left: 1rem;
       font-size: 1.6rem;
       color: #808080;
@@ -75,6 +96,64 @@
     .files-changed {
       color: #393939;
     }
+
+    @media (max-width: 800px) {
+      .commit {
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -webkit-flex-direction: column;
+            -ms-flex-direction: column;
+                flex-direction: column;
+      }
+
+      .diffstat {
+        margin-bottom: 1.5rem;
+      }
+
+      .message {
+        -webkit-box-ordinal-group: 4;
+        -webkit-order: 3;
+            -ms-flex-order: 3;
+                order: 3;
+      }
+
+      .meta {
+        -webkit-box-ordinal-group: 2;
+        -webkit-order: 1;
+            -ms-flex-order: 1;
+                order: 1;
+        -webkit-box-pack: justify;
+        -webkit-justify-content: space-between;
+            -ms-flex-pack: justify;
+                justify-content: space-between;
+      }
+
+      .link, .date, .author {
+        margin-right: 0;
+      }
+
+      .author img {
+        height: 3.2rem;
+        width: 3.2rem;
+      }
+
+      .diffstat {
+        text-align: left;
+        padding-left: 0;
+        -webkit-box-ordinal-group: 3;
+        -webkit-order: 2;
+            -ms-flex-order: 2;
+                order: 2;
+      }
+
+      .diffstat br {
+        display: none;
+      }
+
+      .files-changed:before {
+        content: ", ";
+      }
+    }
   </style>
 </head>
 <body>
@@ -86,9 +165,11 @@
   <script id="commitTmpl" type="x-tmpl-mustache">
   {{~! careful about whitespace, all this is in <pre> ~}}
     <div id="{{commit_sha}}" class="commit"
-      ><div class="link"><a href="{{commit_url}}">{{commit_sha}}</a></div
-      ><div class="date">{{date}}</div
-      ><div class="author"><img src="{{committer_img}}" title="{{committer_name}}" /></div
+      ><div class="meta"
+        ><div class="link"><a href="{{commit_url}}">{{commit_sha}}</a></div
+        ><div class="date">{{date}}</div
+        ><div class="author"><img src="{{committer_img}}" title="{{committer_name}}" /></div
+      ></div
       ><div class="message"
         ><div class="short-msg">{{short_msg}}</div
         ><div class="long-msg">{{long_msg}}</div

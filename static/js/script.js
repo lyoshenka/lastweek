@@ -22,6 +22,7 @@ $(function(){
             additions: diffstat.stats.additions,
             deletions: diffstat.stats.deletions,
             files_changed: diffstat.files_changed,
+            files_plural: diffstat.files_changed != 1
           }));
 
           if (diffstat.stats.total > 50) {

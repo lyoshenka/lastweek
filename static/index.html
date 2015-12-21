@@ -21,11 +21,12 @@
 
   <div id="content">
     <h1>Last Week's Commits</h1>
+    <div id="filter"></div>
     <div id="commits"></div>
   </div>
 
   <script id="commitTmpl" type="x-tmpl-mustache">
-    <div id="{{commit_sha}}" class="commit">
+    <div id="{{commit_sha}}" class="commit" data-committer="{{committer_name}}">
       <div class="message">
         <div class="diffstat"></div>
         <div class="short-msg">{{short_msg}}</div>
@@ -44,6 +45,15 @@
       +<span class="additions">{{additions}}</span>/-<span class="deletions">{{deletions}}</span>,
       <span class="files-changed">{{files_changed}}</span> file{{#if files_plural}}s{{/if}}
     </div>
+  </script>
+
+  <script id="selectTmpl" type="x-tmpl-mustache">
+    <select>
+      <option value="">all committers</option>
+      {{#each committers}}
+        <option value="{{@key}}">{{this}}</option>
+      {{/each}}
+    </select>
   </script>
 
   <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>

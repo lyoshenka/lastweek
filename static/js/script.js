@@ -12,8 +12,19 @@ $(function(){
   var commitsDiv = $('#commits'),
       commitTmpl = Handlebars.compile($('#commitTmpl').html()),
       diffstatTmpl = Handlebars.compile($('#diffstatTmpl').html()),
+      selectTmpl = Handlebars.compile($('#selectTmpl').html()),
+      committers = {},
       commitsByDay = {},
       limit = moment().subtract(7, 'days').format('YYYY-MM-DD');
+
+  var updateCommitters = function(committerKey, committerName) {
+    if (!(committerKey in committers)) {
+      committers[committerKey] = committerName;
+      $('#filter').html(selectTmpl({
+        committers: committers
+      }));
+    }
+  }
 
   var diffstat = function (sha) {
     var storedDiff = store.get('diffstat_'+sha),
@@ -41,35 +52,35 @@ $(function(){
   };
 
   var bucketCommits = function(page, cb) {
-        var limitReached = false;
+    var limitReached = false;
 
-        if (page > 5) {
-          return; // safety precaution
-        }
+    if (page > 5) {
+      return; // safety precaution
+    }
 
-        $.getJSON('/commits' , {page: page}, function(data) {
-          console.log(page, data);
-          data.forEach(function(commit,i) {
-            var date = moment(commit['commit']['committer']['date']), // github shows author date, we use committer date
-                dateKey = date.format('YYYY-MM-DD');
+    $.getJSON('/commits' , {page: page}, function(data) {
+  //    console.log(page, data);
+      data.forEach(function(commit,i) {
+        var date = moment(commit['commit']['committer']['date']), // github shows author date, we use committer date
+            dateKey = date.format('YYYY-MM-DD');
 
-            if (dateKey >= limit) {
-              if (!(dateKey in commitsByDay)) {
-                commitsByDay[dateKey] = [];
-              }
-              commitsByDay[dateKey].push(commit);
-            } else {
-              limitReached = true;
-            }
-          });
-
-          if (limitReached) {
-            cb();
-          } else {
-            bucketCommits(page+1);
+        if (dateKey >= limit) {
+          if (!(dateKey in commitsByDay)) {
+            commitsByDay[dateKey] = [];
           }
-        });
-      };
+          commitsByDay[dateKey].push(commit);
+        } else {
+          limitReached = true;
+        }
+      });
+
+      if (limitReached) {
+        cb();
+      } else {
+        bucketCommits(page+1);
+      }
+    });
+  };
 
 
   bucketCommits(1, function() {
@@ -96,8 +107,21 @@ $(function(){
           long_msg: restOfMsg.trim()
         }));
 
+        updateCommitters(commit['commit']['author']['name'],commit['commit']['author']['name']);
         diffstat(commitSha);
       });
+    });
+  });
+
+  $('#filter').on('change', function(){
+    var chosenCommitter = $(this).find('select').val();
+    commitsDiv.find('.commit').each(function(){
+      if (!chosenCommitter) {
+        $(this).show();
+      }
+      else {
+        $(this)[$(this).data('committer') == chosenCommitter ? 'show' : 'hide']();
+      }
     });
   });
 });
